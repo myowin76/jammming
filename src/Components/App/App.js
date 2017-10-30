@@ -27,7 +27,7 @@ class App extends Component {
                     album: 'Madman across the water'
                 }
             ],
-            playlistName: "My Playlist",
+            playlistName: ['My Playlist'],
             playlistTracks: [
                 {
                     name: 'Stronger',
@@ -80,10 +80,9 @@ class App extends Component {
                     <div className="App-playlist">
                         <SearchResults 
                             searchResults={ this.state.searchResults }  
-                            onAdd={ this.addTrack }
-                        />
+                            onAdd={ this.addTrack } />
                         <Playlist playlistName={ this.state.playlistName }
-                            playlistTracks={ this.state.playlistName }
+                            playlistTracks={ this.state.playlistTracks }
                             onRemove={ this.onRemove }
                             onNameChange={ this.updatePlaylistName }
                         />
