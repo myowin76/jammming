@@ -8,21 +8,19 @@ const spotifyPath = 'https://accounts.spotify.com/authorize?client_id=' + client
 							'&redirect_uri='+ redirect_uri + 
 							'&scope=user-read-private%20user-read-email&state=34fFs29kd09';
 
-const spotifySearchUrl = 'https://api.spotify.com/v1/search'							
-
 let accessToken, expiresIn;
-// let accessToken = 'BQAmA7OmEZV_eyHqCTPAODz7wk1hOS0KEj9WPkwetOgNWpmYCofa3Q0v99RxtezlFchGSGBS43xHSiQXF9s63HxD_hl5EJ7V80FjciVKkC36aonKCbcu5H8JXArVwHzQwj3iYaXnFla0vF2f9Ph4sv2LWgpcEgnbMc84PKwxjU814AoIZa0&token_type=Bearer&expires_in=3600&state=34fFs29kd09';
 
 export let Spotify = {
 
 	getAccessToken(){
 		
-		if(accessToken != null){
+		if(accessToken){
 			return new Promise(resolve => resolve(accessToken));
 		}else{
 			console.log('getting token..');
 
-			window.location.href = spotifyPath;
+			window.location = spotifyPath;
+			// window.history.replaceState('URI', 'test', spotifyPath);
 			let AT = (window.location.href).match(/access_token=([^&]*)/);
 			let EI = (window.location.href).match(/expires_in=([^&]*)/);
 
@@ -33,7 +31,7 @@ export let Spotify = {
 				expiresIn = AT;
 			}
 
-			window.location.href = redirect_uri;
+			// window.location.href = redirect_uri;
 			
 			window.setTimeout(() => accessToken = '', expiresIn * 1000);
 			window.history.pushState('Access Token', null, '/');
@@ -44,23 +42,22 @@ export let Spotify = {
 
 			return accessToken;
 		}
-		
-		
 	},
 
 	search(term){
 		
-
-		// console.log("ATTT" + accessToken);
 		// return this.getAccessToken().then(()=>{
-		// 	console.log("ATTT" + accessToken);
-			return fetch(spotifySearchUrl + '?q=' + term, {
+		
+			return fetch('https://api.spotify.com/v1/search?q=' + term, {
 				headers: {
 					Authorization: 'Bearer' + this.getAccessToken()
 				}
+
 			}).then(response => {
 				return response.json();
+
 			}).then(jsonResponse => {
+				
 				if(jsonResponse){
 					return jsonResponse.tracks.map(track => (
 						{
@@ -77,15 +74,32 @@ export let Spotify = {
 		// });
 	},
 
+	getUserID(){
+		let userID;
+		const headers = {
+			Authorization: 'Bearer BQA7gRxdxZdGR1yZ6dr8Fy94JTHJrTFJ1J0LRtNmbB5m6q1s2kTPoagGeCBPPeGOsDFbYCshAMb-U6NT-mrIeKJ20HOExk4gpy-Kqth9sUj3t8KaT-ZB4lbtAVH9KliunohjPk6EMyoU0mIMPDhH8JZRz19O6W7qcLOx1dr08-lHcJMKcxc'
+		}
+
+		// Get Current Users ID
+		return fetch('https://api.spotify.com/v1/me', {
+				headers: headers
+			}).then(response => {
+				return response.json();
+			}).then(jsonResponse => {
+				userID = jsonResponse.id
+				console.log(userID);
+			})
+	},
+
 	savePlaylist(name, trackUris){
 		// check if there are values saved to the method's two arguments. If not, return.
-		// GET current user's ID
-		// POST a new playlist with the input name
-		// to the current user's Spotify account. 
+		if(name ==null || trackUris.length < 0){
+			return;
+		}
+		
 		// Receive the playlist ID back from the request.
 
-		// POST the track URIs to the newly-created playlist, 
-		// referencing the current user's account (ID) and the new playlist (ID)
+		
 		let userID;
 		let playlistID;
 
@@ -93,7 +107,7 @@ export let Spotify = {
 			Authorization: 'Bearer' + this.getAccessToken()
 		}
 
-
+		// Get Current Users ID
 		fetch('https://api.spotify.com/v1/me', {
 				headers: headers
 			}).then(response => {
@@ -103,14 +117,17 @@ export let Spotify = {
 			})
 
 
+		// POST a new playlist with the input name
+		// POST the track URIs to the newly-created playlist, 
+		// referencing the current user's account (ID) and the new playlist (ID)	
 		return(
 			fetch('/v1/users/${userID}/playlists', {
 				method: 'POST',
 				'Content-Type': 'application/json',
-				data: {
+				body: JSON.stringify({
 					name: name,
 					playlist: trackUris
-				}
+				})
 			}).then(response => {
 				return response.json();
 			}).then(jsonResponse => {
