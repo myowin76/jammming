@@ -13,44 +13,44 @@ let accessToken, expiresIn;
 export let Spotify = {
 
 	getAccessToken(){
-		
-		if(accessToken){
-			return new Promise(resolve => resolve(accessToken));
-		}else{
-			console.log('getting token..');
+		return 'BQA7gRxdxZdGR1yZ6dr8Fy94JTHJrTFJ1J0LRtNmbB5m6q1s2kTPoagGeCBPPeGOsDFbYCshAMb-U6NT-mrIeKJ20HOExk4gpy-Kqth9sUj3t8KaT-ZB4lbtAVH9KliunohjPk6EMyoU0mIMPDhH8JZRz19O6W7qcLOx1dr08-lHcJMKcxc';
+		// if(accessToken){
+		// 	return new Promise(resolve => resolve(accessToken));
+		// }else{
+		// 	console.log('getting token..');
 
-			window.location = spotifyPath;
-			// window.history.replaceState('URI', 'test', spotifyPath);
-			let AT = (window.location.href).match(/access_token=([^&]*)/);
-			let EI = (window.location.href).match(/expires_in=([^&]*)/);
+		// 	window.location = spotifyPath;
+		// 	// window.history.replaceState('URI', 'test', spotifyPath);
+		// 	let AT = (window.location.href).match(/access_token=([^&]*)/);
+		// 	let EI = (window.location.href).match(/expires_in=([^&]*)/);
 
-			if (AT != null) {
-				accessToken = AT;
-			}
-			if (EI != null) {
-				expiresIn = AT;
-			}
+		// 	if (AT != null) {
+		// 		accessToken = AT;
+		// 	}
+		// 	if (EI != null) {
+		// 		expiresIn = AT;
+		// 	}
 
-			// window.location.href = redirect_uri;
+		// 	// window.location.href = redirect_uri;
 			
-			window.setTimeout(() => accessToken = '', expiresIn * 1000);
-			window.history.pushState('Access Token', null, '/');
+		// 	window.setTimeout(() => accessToken = '', expiresIn * 1000);
+		// 	window.history.pushState('Access Token', null, '/');
 
-			if (!accessToken && !AT){
+		// 	if (!accessToken && !AT){
 
-			}	
+		// 	}	
 
-			return accessToken;
-		}
+		// 	return accessToken;
+		// }
 	},
 
 	search(term){
 		
 		// return this.getAccessToken().then(()=>{
 		
-			return fetch('https://api.spotify.com/v1/search?q=' + term, {
+			return fetch('https://api.spotify.com/v1/search?q=' + term +'&type=playlist', {
 				headers: {
-					Authorization: 'Bearer' + this.getAccessToken()
+					Authorization: 'Bearer ' + this.getAccessToken() 
 				}
 
 			}).then(response => {
@@ -59,13 +59,14 @@ export let Spotify = {
 			}).then(jsonResponse => {
 				
 				if(jsonResponse){
-					return jsonResponse.tracks.map(track => (
+					console.log(jsonResponse);
+					return jsonResponse.playlists.items.map(track => (
 						{
-							ID: track.id,
-							Name: track.name,
-							Artist: track.artist[0].name,
-							Album: track.album,
-							URI: track.uri
+							id: track.id,
+							name: track.name,
+							//Artist: track.artist[0].name,
+							// Album: track.album,
+							uri: track.uri
 						}
 					))
 				}
@@ -77,7 +78,7 @@ export let Spotify = {
 	getUserID(){
 		let userID;
 		const headers = {
-			Authorization: 'Bearer BQA7gRxdxZdGR1yZ6dr8Fy94JTHJrTFJ1J0LRtNmbB5m6q1s2kTPoagGeCBPPeGOsDFbYCshAMb-U6NT-mrIeKJ20HOExk4gpy-Kqth9sUj3t8KaT-ZB4lbtAVH9KliunohjPk6EMyoU0mIMPDhH8JZRz19O6W7qcLOx1dr08-lHcJMKcxc'
+			Authorization: 'Bearer ' + this.getAccessToken() 
 		}
 
 		// Get Current Users ID
