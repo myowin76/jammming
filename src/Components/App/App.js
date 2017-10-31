@@ -64,7 +64,7 @@ class App extends Component {
         }
     }
     removeTrack(track){
-        this.setState(prevState => ({
+        this.sesavePlaylisttState(prevState => ({
             playlistTracks: prevState.filter(el => el.id !== track.id)
         }))
     }
@@ -76,16 +76,18 @@ class App extends Component {
     }
 
     savePlaylist(){
-        let uri = this.state.playlistTracks;
+        let trackURIs = this.state.playlistTracks;
+
+        Spotify.savePlaylist();
     }
 
     search(term){
-        console.log('Going to Search...' + term);
-        Spotify.search('Elton').then(tracks => {
-            console.log('Tracks' + tracks);
-            // this.setState({
-            //     searchResults: tracks
-            // })
+        
+        Spotify.search(term).then(tracks => {
+            console.log('Tracks: ' + tracks);
+            this.setState({
+                searchResults: tracks
+            })
         })
     }
 
