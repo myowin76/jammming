@@ -48,7 +48,7 @@ export let Spotify = {
 		
 		// return this.getAccessToken().then(()=>{
 		
-			return fetch('https://api.spotify.com/v1/search?q=' + term +'&type=playlist', {
+			return fetch('https://api.spotify.com/v1/search?q=' + term +'&type=track', {
 				headers: {
 					Authorization: 'Bearer ' + this.getAccessToken() 
 				}
@@ -60,12 +60,12 @@ export let Spotify = {
 				
 				if(jsonResponse){
 					console.log(jsonResponse);
-					return jsonResponse.playlists.items.map(track => (
+					return jsonResponse.tracks.items.map(track => (
 						{
 							id: track.id,
 							name: track.name,
-							//Artist: track.artist[0].name,
-							// Album: track.album,
+							artist: track.artists[0].name,
+							album: track.album.name,
 							uri: track.uri
 						}
 					))
