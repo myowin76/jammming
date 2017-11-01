@@ -1,95 +1,96 @@
-const client_id = '32f803599e424dfa889541229d8c5bc1'; // Your client id
-// const client_secret = '192b745b4b5142c98d0948e8a5ff967f'; // Your secret
-const redirect_uri = 'http://localhost:3000/';
+// const client_id = '32f803599e424dfa889541229d8c5bc1'; // Your client id
+// // const client_secret = '192b745b4b5142c98d0948e8a5ff967f'; // Your secret
+// const redirect_uri = 'http://localhost:3000/';
 
-// const corsAnywhere = 'https://cors-anywhere.herokuapp.com/';
+// // const corsAnywhere = 'https://cors-anywhere.herokuapp.com/';
 
-const spotifyPath = 'https://accounts.spotify.com/authorize?client_id=' + client_id +'&response_type=token' +
-							'&redirect_uri='+ redirect_uri + 
-							'&scope=user-read-private%20user-read-email&state=34fFs29kd09';
+// const spotifyPath = 'https://accounts.spotify.com/authorize?client_id=' + client_id +'&response_type=token' +
+// 							'&redirect_uri='+ redirect_uri + 
+// 							'&scope=user-read-private%20user-read-email&state=34fFs29kd09';
 
-let accessToken, expiresIn;
+// let accessToken, expiresIn;
 
 export let Spotify = {
 
-	getAccessToken(){
+	// getAccessToken(){
+
     
-		//localstorage
-		var expires = 0 + localStorage.getItem('spotify_expires', '0');
-		if ((new Date()).getTime() > expires) {
-			window.location = spotifyPath;
-			accessToken = (window.location.href).match(/access_token=([^&]*)/)[1];
-			expiresIn = (window.location.href).match(/expires_in=([^&]*)/);
-			console.log("I arrived here");
-				localStorage.setItem('spotify_token', accessToken);
-			localStorage.setItem('spotify_expires', (new Date()).getTime() + expiresIn);
+	// 	//localstorage
+	// 	var expires = 0 + localStorage.getItem('spotify_expires', '0');
+	// 	if ((new Date()).getTime() > expires) {
+	// 		window.location = spotifyPath;
+	// 		accessToken = (window.location.href).match(/access_token=([^&]*)/)[1];
+	// 		expiresIn = (window.location.href).match(/expires_in=([^&]*)/);
+	// 		console.log("I arrived here");
+	// 			localStorage.setItem('spotify_token', accessToken);
+	// 			localStorage.setItem('spotify_expires', (new Date()).getTime() + expiresIn);
 
-		}else{
-			var accessToken = localStorage.getItem('spotify_token', '');
-			console.log("GETHERE");
-		}
+	// 	}else{
+	// 		var accessToken = localStorage.getItem('spotify_token', '');
+	// 		console.log("GETHERE");
+	// 	}
 		
-		// if ((new Date()).getTime() > expires) {
-		// 	// get new token
-		// 	// window.location = spotifyPath;
+	// 	// if ((new Date()).getTime() > expires) {
+	// 	// 	// get new token
+	// 	// 	// window.location = spotifyPath;
 			
-		// 	accessToken = (window.location.href).match(/access_token=([^&]*)/);
-		// 	expiresIn = (window.location.href).match(/expires_in=([^&]*)/);
+	// 	// 	accessToken = (window.location.href).match(/access_token=([^&]*)/);
+	// 	// 	expiresIn = (window.location.href).match(/expires_in=([^&]*)/);
 
-		// 	// window.location.href = redirect_uri;
+	// 	// 	// window.location.href = redirect_uri;
 
-		// 	// if(access_token == null){
-		// 	// 	return
-		// 	// }
+	// 	// 	// if(access_token == null){
+	// 	// 	// 	return
+	// 	// 	// }
 
-		// 	localStorage.setItem('spotify_token', accessToken);
-		// 	localStorage.setItem('spotify_expires', (new Date()).getTime() + expiresIn);
+	// 	// 	localStorage.setItem('spotify_token', accessToken);
+	// 	// 	localStorage.setItem('spotify_expires', (new Date()).getTime() + expiresIn);
 
-		// // 	// window.location.href = redirect_uri;
+	// 	// // 	// window.location.href = redirect_uri;
 
-		// }else{
-		// 	var accessToken = localStorage.getItem('spotify_token', '');
-		// 	console.log('Should not here!');
-		// }
-		console.log("TOKEN: " + accessToken);
-		return accessToken;
+	// 	// }else{
+	// 	// 	var accessToken = localStorage.getItem('spotify_token', '');
+	// 	// 	console.log('Should not here!');
+	// 	// }
+	// 	console.log("TOKEN: " + accessToken);
+	// 	return accessToken;
 
-		// if(accessToken){
-		// 	return new Promise(resolve => resolve(accessToken));
-		// }else{
+	// 	// if(accessToken){
+	// 	// 	return new Promise(resolve => resolve(accessToken));
+	// 	// }else{
 
-		// 	window.location = spotifyPath;
+	// 	// 	window.location = spotifyPath;
 		
-		// 	let AT = (window.location.href).match(/access_token=([^&]*)/);
-		// 	let EI = (window.location.href).match(/expires_in=([^&]*)/);
+	// 	// 	let AT = (window.location.href).match(/access_token=([^&]*)/);
+	// 	// 	let EI = (window.location.href).match(/expires_in=([^&]*)/);
 
-		// 	if (AT != null) {
-		// 		accessToken = AT;
-		// 	}
-		// 	if (EI != null) {
-		// 		expiresIn = AT;
-		// 	}
+	// 	// 	if (AT != null) {
+	// 	// 		accessToken = AT;
+	// 	// 	}
+	// 	// 	if (EI != null) {
+	// 	// 		expiresIn = AT;
+	// 	// 	}
 
-		// 	// window.location.href = redirect_uri;
+	// 	// 	// window.location.href = redirect_uri;
 			
-		// 	// window.setTimeout(() => accessToken = '', expiresIn * 1000);
-		// 	// window.history.pushState('Access Token', null, '/');
+	// 	// 	// window.setTimeout(() => accessToken = '', expiresIn * 1000);
+	// 	// 	// window.history.pushState('Access Token', null, '/');
 
-		// 	if (!accessToken && !AT){
+	// 	// 	if (!accessToken && !AT){
 
-		// 	}	
+	// 	// 	}	
 
-		// 	return accessToken;
-		// }
+	// 	// 	return accessToken;
+	// 	// }
 
-	},
+	// },
 
 	search(term){
 		
 			console.log(accessToken);
 			return fetch('https://api.spotify.com/v1/search?q=' + term +'&type=track', {
 				headers: {
-					Authorization: 'Bearer ' + this.getAccessToken()
+					Authorization: 'Bearer ' + localStorage.getItem('spotify_token', '')
 				}
 
 			}).then(response => {
