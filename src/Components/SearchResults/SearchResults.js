@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import './SearchResults.css';
 import { TrackList } from '../TrackList/TrackList';
 
-export class SearchResults extends React.Component{
+export class SearchResults extends Component{
 	
 	render(){
 		return(

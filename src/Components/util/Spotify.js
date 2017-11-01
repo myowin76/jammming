@@ -13,14 +13,53 @@ let accessToken, expiresIn;
 export let Spotify = {
 
 	getAccessToken(){
-		return 'BQA7gRxdxZdGR1yZ6dr8Fy94JTHJrTFJ1J0LRtNmbB5m6q1s2kTPoagGeCBPPeGOsDFbYCshAMb-U6NT-mrIeKJ20HOExk4gpy-Kqth9sUj3t8KaT-ZB4lbtAVH9KliunohjPk6EMyoU0mIMPDhH8JZRz19O6W7qcLOx1dr08-lHcJMKcxc';
+    
+		//localstorage
+		var expires = 0 + localStorage.getItem('spotify_expires', '0');
+		if ((new Date()).getTime() > expires) {
+			window.location = spotifyPath;
+			accessToken = (window.location.href).match(/access_token=([^&]*)/)[1];
+			expiresIn = (window.location.href).match(/expires_in=([^&]*)/);
+			console.log("I arrived here");
+				localStorage.setItem('spotify_token', accessToken);
+			localStorage.setItem('spotify_expires', (new Date()).getTime() + expiresIn);
+
+		}else{
+			var accessToken = localStorage.getItem('spotify_token', '');
+			console.log("GETHERE");
+		}
+		
+		// if ((new Date()).getTime() > expires) {
+		// 	// get new token
+		// 	// window.location = spotifyPath;
+			
+		// 	accessToken = (window.location.href).match(/access_token=([^&]*)/);
+		// 	expiresIn = (window.location.href).match(/expires_in=([^&]*)/);
+
+		// 	// window.location.href = redirect_uri;
+
+		// 	// if(access_token == null){
+		// 	// 	return
+		// 	// }
+
+		// 	localStorage.setItem('spotify_token', accessToken);
+		// 	localStorage.setItem('spotify_expires', (new Date()).getTime() + expiresIn);
+
+		// // 	// window.location.href = redirect_uri;
+
+		// }else{
+		// 	var accessToken = localStorage.getItem('spotify_token', '');
+		// 	console.log('Should not here!');
+		// }
+		console.log("TOKEN: " + accessToken);
+		return accessToken;
+
 		// if(accessToken){
 		// 	return new Promise(resolve => resolve(accessToken));
 		// }else{
-		// 	console.log('getting token..');
 
 		// 	window.location = spotifyPath;
-		// 	// window.history.replaceState('URI', 'test', spotifyPath);
+		
 		// 	let AT = (window.location.href).match(/access_token=([^&]*)/);
 		// 	let EI = (window.location.href).match(/expires_in=([^&]*)/);
 
@@ -33,8 +72,8 @@ export let Spotify = {
 
 		// 	// window.location.href = redirect_uri;
 			
-		// 	window.setTimeout(() => accessToken = '', expiresIn * 1000);
-		// 	window.history.pushState('Access Token', null, '/');
+		// 	// window.setTimeout(() => accessToken = '', expiresIn * 1000);
+		// 	// window.history.pushState('Access Token', null, '/');
 
 		// 	if (!accessToken && !AT){
 
@@ -42,15 +81,15 @@ export let Spotify = {
 
 		// 	return accessToken;
 		// }
+
 	},
 
 	search(term){
 		
-		// return this.getAccessToken().then(()=>{
-		
+			console.log(accessToken);
 			return fetch('https://api.spotify.com/v1/search?q=' + term +'&type=track', {
 				headers: {
-					Authorization: 'Bearer ' + this.getAccessToken() 
+					Authorization: 'Bearer ' + this.getAccessToken()
 				}
 
 			}).then(response => {
@@ -59,7 +98,6 @@ export let Spotify = {
 			}).then(jsonResponse => {
 				
 				if(jsonResponse){
-					console.log(jsonResponse);
 					return jsonResponse.tracks.items.map(track => (
 						{
 							id: track.id,
@@ -72,25 +110,26 @@ export let Spotify = {
 				}
 
 			})
-		// });
+		
 	},
 
-	getUserID(){
-		let userID;
-		const headers = {
-			Authorization: 'Bearer ' + this.getAccessToken() 
-		}
+	// getUserID(){
+	// 	let userID;
+	// 	const headers = {
+	// 		Authorization: 'Bearer ' + this.getAccessToken() 
+	// 	}
 
-		// Get Current Users ID
-		return fetch('https://api.spotify.com/v1/me', {
-				headers: headers
-			}).then(response => {
-				return response.json();
-			}).then(jsonResponse => {
-				userID = jsonResponse.id
-				console.log(userID);
-			})
-	},
+	// 	// Get Current Users ID
+	// 	return fetch('https://api.spotify.com/v1/me', {
+	// 			headers: headers
+	// 		}).then(response => {
+	// 			return response.json();
+
+	// 		}).then(jsonResponse => {
+	// 			userID = jsonResponse.id
+
+	// 		})
+	// },
 
 	savePlaylist(name, trackUris){
 		// check if there are values saved to the method's two arguments. If not, return.
@@ -99,8 +138,6 @@ export let Spotify = {
 		}
 		
 		// Receive the playlist ID back from the request.
-
-		
 		let userID;
 		let playlistID;
 
@@ -122,7 +159,7 @@ export let Spotify = {
 		// POST the track URIs to the newly-created playlist, 
 		// referencing the current user's account (ID) and the new playlist (ID)	
 		return(
-			fetch('/v1/users/${userID}/playlists', {
+			fetch('/v1/users/' + userID +'/playlists', {
 				method: 'POST',
 				'Content-Type': 'application/json',
 				body: JSON.stringify({

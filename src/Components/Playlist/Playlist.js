@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { Component }  from 'react';
 import './Playlist.css';
 import { TrackList } from '../TrackList/TrackList';
 
-export class Playlist extends React.Component{
+export class Playlist extends Component{
 	constructor(props){
 		super(props);
 		this.handleNameChange = this.handleNameChange.bind(this);
