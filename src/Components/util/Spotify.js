@@ -61,6 +61,7 @@ export let Spotify = {
 		// referencing the current user's account (ID) and the new playlist (ID)	
 		return this.getUserID().then(()=>{
 			if(userID){
+				console.log()
 				return(
 					fetch('https://api.spotify.com/v1/users/' + userID +'/playlists', {
 						method: 'POST',
@@ -80,6 +81,19 @@ export let Spotify = {
 				)
 			}
 		});
+	}
 
+	readPlayList(){
+		fetch('https://api.spotify.com/v1/users/' + userID +'/playlists', {
+			method: 'GET',
+			headers: {
+				Authorization: 'Bearer ' + localStorage.getItem('spotify_token', ''),
+				'Content-Type': 'application/json'
+			}
+		}).then(response => {
+			return response.json();
+		}).then(jsonResponse => {
+			playlistID = jsonResponse.access_token;
+		})
 	}
 }
