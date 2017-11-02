@@ -11,13 +11,11 @@ export class Track extends Component{
 	}
 
 	renderAction(){
-		let isRemoval = true;
-		if(isRemoval){
-			return '-';
-			// return '<a onClick={ this.addTrack } className="Track-action">-</a>';
+		
+		if(this.props.isRemoval){
+			return <a onClick={ this.removeTrack } className="Track-action">-</a>;
 		}else{
-			return '+';
-			// return '<a onClick={ this.removeTrack } className="Track-action">+</a>';
+			return <a onClick={ this.addTrack } className="Track-action">+</a>;
 		}
 	}
 
@@ -37,8 +35,7 @@ export class Track extends Component{
 				<p>{ this.props.track.artist } | { this.props.track.album }</p>
 				</div>
 				
-				<a onClick={ this.addTrack } className="Track-action">+</a>
-				<a onClick={ this.removeTrack } className="Track-action">-</a>
+				{ this.renderAction()}
 			</div>
 		)
 	}
