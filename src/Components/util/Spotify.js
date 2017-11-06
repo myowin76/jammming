@@ -1,11 +1,39 @@
+const client_id = '32f803599e424dfa889541229d8c5bc1'; // Your client id
+const redirect_uri = 'http://localhost:3000/';
+// const redirect_uri = 'http://aung-myo.win/';
+const spotifyPath = 'https://accounts.spotify.com/authorize?client_id=' + client_id +'&response_type=token' +
+                    '&redirect_uri='+ redirect_uri + 
+                    '&scope=playlist-read-private%20playlist-modify%20playlist-modify-private&state=34fFs29kd09';
+
+
+
+let accessToken, expiresIn;
 let userID;
 let playlistID;
+
 
 export let Spotify = {
 
 	getAccessToken(){
+        
+        // save in localstorage //still need to do it right
+        var expires = 0 + localStorage.getItem('spotify_expires', '0');
 
-	},
+        if (new Date().getTime() > expires) {
+            window.location = spotifyPath;
+
+            accessToken = (window.location.href).match(/access_token=([^&]*)/)[1];
+            expiresIn = (window.location.href).match(/expires_in=([^&]*)/);
+
+            localStorage.setItem('spotify_token', accessToken);
+            localStorage.setItem('spotify_expires', (new Date()).getTime() + expiresIn);
+
+        }else{
+            accessToken = localStorage.getItem('spotify_token', '');
+        }
+        
+        return accessToken;
+    },
 
 	search(term){
 			
@@ -30,9 +58,7 @@ export let Spotify = {
 					}
 				))
 			}
-
 		})
-		
 	},
 
 	getUserID(){
@@ -49,18 +75,15 @@ export let Spotify = {
 	},
 
 	savePlaylist(name, trackUris){
-		// check if there are values saved to the method's two arguments. If not, return.
+		
 		if(name == null || trackUris.length < 0){
 			return;
 		}
-		// Receive the playlist ID back from the request.
-		// POST a new playlist with the input name
-		// POST the track URIs to the newly-created playlist, 
-		// referencing the current user's account (ID) and the new playlist (ID)	
+		
 		return this.getUserID().then(()=>{
 			if(userID){
-				return(
-					fetch('https://api.spotify.com/v1/users/' + userID +'/playlists', {
+				
+					return fetch('https://api.spotify.com/v1/users/' + userID +'/playlists', {
 						method: 'POST',
 						headers: {
 							'Authorization': 'Bearer ' + localStorage.getItem('spotify_token', ''),
@@ -71,32 +94,35 @@ export let Spotify = {
 							public: false,
 							collaborative: true
 						})
+		
 					}).then(response => {
 						return response.json();
+
 					}).then(jsonResponse => {
 
 						playlistID = jsonResponse.id;
-						console.log("URIs" + trackUris);
-						fetch('https://api.spotify.com/v1/users/' + userID +'/playlists/' + playlistID + '/tracks', {
-							method: 'POST',
-							headers: {
-								'Authorization': 'Bearer ' + localStorage.getItem('spotify_token', ''),
-								'Content-Type': 'application/json'
-							},
-							body: JSON.stringify({
-								uris: trackUris
-							})					
+						if(playlistID){
 
-						}).then(response => {
-							console.log(response);
-							// return response.json();
-						}).then(jsonResponse => {
-							
-							console.log("FINALLY HERE");
-						});
+							return fetch('https://api.spotify.com/v1/users/' + userID +'/playlists/' + playlistID + '/tracks', {
+								method: 'POST',
+								headers: {
+									'Authorization': 'Bearer ' + localStorage.getItem('spotify_token', ''),
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify({
+									uris: trackUris
+								})					
+
+							}).then(response => {
+								return response.json();
+
+							}).then(jsonResponse => {
+								return jsonResponse.snapshot_id;
+							});
+						}
 						
 					})
-				)
+				
 			}
 		});
 	},

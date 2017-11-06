@@ -25,38 +25,10 @@ class App extends Component {
         this.search = this.search.bind(this);
     }
 
-    getAccessToken(){
-        const client_id = '32f803599e424dfa889541229d8c5bc1'; // Your client id
-        const redirect_uri = 'http://localhost:3000/';
-        const spotifyPath = 'https://accounts.spotify.com/authorize?client_id=' + client_id +'&response_type=token' +
-                            '&redirect_uri='+ redirect_uri + 
-                            '&scope=playlist-read-private%20playlist-modify%20playlist-modify-private&state=34fFs29kd09';
-
-
-
-        let accessToken, expiresIn;
-        // save in localstorage
-        var expires = 0 + localStorage.getItem('spotify_expires', '0');
-
-        if ((new Date()).getTime() > expires) {
-
-            window.location = spotifyPath;
-
-            accessToken = (window.location.href).match(/access_token=([^&]*)/)[1];
-            expiresIn = (window.location.href).match(/expires_in=([^&]*)/);
-
-            localStorage.setItem('spotify_token', accessToken);
-            localStorage.setItem('spotify_expires', (new Date()).getTime() + expiresIn);
-
-        }else{
-            accessToken = localStorage.getItem('spotify_token', '');
-        }
-        
-        return accessToken;
-    }
+    
 
     componentDidMount() {
-        this.getAccessToken()
+        Spotify.getAccessToken();
     }
 
     addTrack(track){
@@ -88,11 +60,21 @@ class App extends Component {
         let name = this.state.playlistName;
 
         Object.keys(trackURIs).map((p)=>{
-            uris.push(trackURIs[p].uri);
-        })
-        // console.log(uris);return;
+            return uris.push(trackURIs[p].uri);
+        })      
 
-        Spotify.savePlaylist(name, uris);
+        Spotify.savePlaylist(name, uris)
+            .then((snap_id) => {
+                // clear the search results and play list
+                if(snap_id){
+                    this.setState({
+                        searchResults: [],
+                        playlistTracks: [],
+                        playlistName: 'New Playlist'
+                    })
+                }
+                return snap_id;
+            });
     }
 
     showPlaylist(){
