@@ -1,6 +1,6 @@
 let userID;
-
 let playlistID;
+
 export let Spotify = {
 
 	getAccessToken(){
@@ -9,29 +9,29 @@ export let Spotify = {
 
 	search(term){
 			
-			return fetch('https://api.spotify.com/v1/search?q=' + term +'&type=track', {
-				headers: {
-					Authorization: 'Bearer ' + localStorage.getItem('spotify_token', '')
-				}
+		return fetch('https://api.spotify.com/v1/search?q=' + term +'&type=track', {
+			headers: {
+				Authorization: 'Bearer ' + localStorage.getItem('spotify_token', '')
+			}
 
-			}).then(response => {
-				return response.json();
+		}).then(response => {
+			return response.json();
 
-			}).then(jsonResponse => {
-				
-				if(jsonResponse){
-					return jsonResponse.tracks.items.map(track => (
-						{
-							id: track.id,
-							name: track.name,
-							artist: track.artists[0].name,
-							album: track.album.name,
-							uri: track.uri
-						}
-					))
-				}
+		}).then(jsonResponse => {
+			
+			if(jsonResponse){
+				return jsonResponse.tracks.items.map(track => (
+					{
+						id: track.id,
+						name: track.name,
+						artist: track.artists[0].name,
+						album: track.album.name,
+						uri: track.uri
+					}
+				))
+			}
 
-			})
+		})
 		
 	},
 
@@ -50,8 +50,6 @@ export let Spotify = {
 
 	savePlaylist(name, trackUris){
 		// check if there are values saved to the method's two arguments. If not, return.
-		console.log("Name: " + name);
-		console.log("Tracks:" + JSON.stringify(trackUris));
 		if(name == null || trackUris.length < 0){
 			return;
 		}
@@ -61,30 +59,50 @@ export let Spotify = {
 		// referencing the current user's account (ID) and the new playlist (ID)	
 		return this.getUserID().then(()=>{
 			if(userID){
-				console.log()
 				return(
 					fetch('https://api.spotify.com/v1/users/' + userID +'/playlists', {
 						method: 'POST',
 						headers: {
-							Authorization: 'Bearer ' + localStorage.getItem('spotify_token', ''),
+							'Authorization': 'Bearer ' + localStorage.getItem('spotify_token', ''),
 							'Content-Type': 'application/json'
 						},
-						data: {
+						body: JSON.stringify({
 							name: name,
-							playlist: trackUris
-						}
+							public: false,
+							collaborative: true
+						})
 					}).then(response => {
 						return response.json();
 					}).then(jsonResponse => {
-						playlistID = jsonResponse.access_token;
+
+						playlistID = jsonResponse.id;
+						console.log("URIs" + trackUris);
+						fetch('https://api.spotify.com/v1/users/' + userID +'/playlists/' + playlistID + '/tracks', {
+							method: 'POST',
+							headers: {
+								'Authorization': 'Bearer ' + localStorage.getItem('spotify_token', ''),
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify({
+								uris: trackUris
+							})					
+
+						}).then(response => {
+							console.log(response);
+							// return response.json();
+						}).then(jsonResponse => {
+							
+							console.log("FINALLY HERE");
+						});
+						
 					})
 				)
 			}
 		});
-	}
+	},
 
-	readPlayList(){
-		fetch('https://api.spotify.com/v1/users/' + userID +'/playlists', {
+	getPlayList(){
+		return fetch('https://api.spotify.com/v1/users/' + userID +'/playlists', {
 			method: 'GET',
 			headers: {
 				Authorization: 'Bearer ' + localStorage.getItem('spotify_token', ''),
@@ -93,7 +111,8 @@ export let Spotify = {
 		}).then(response => {
 			return response.json();
 		}).then(jsonResponse => {
-			playlistID = jsonResponse.access_token;
+			let playlist = jsonResponse.tracks.items;
+			console.log(playlist);
 		})
 	}
 }

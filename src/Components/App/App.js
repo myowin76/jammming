@@ -30,7 +30,9 @@ class App extends Component {
         const redirect_uri = 'http://localhost:3000/';
         const spotifyPath = 'https://accounts.spotify.com/authorize?client_id=' + client_id +'&response_type=token' +
                             '&redirect_uri='+ redirect_uri + 
-                            '&scope=playlist-modify%20playlist-modify-private%20user-read-private%20user-read-email&state=34fFs29kd09';
+                            '&scope=playlist-read-private%20playlist-modify%20playlist-modify-private&state=34fFs29kd09';
+
+
 
         let accessToken, expiresIn;
         // save in localstorage
@@ -81,9 +83,16 @@ class App extends Component {
     }
 
     savePlaylist(){
+        let uris = [];
         let trackURIs = this.state.playlistTracks;
         let name = this.state.playlistName;
-        Spotify.savePlaylist(name, trackURIs);
+
+        Object.keys(trackURIs).map((p)=>{
+            uris.push(trackURIs[p].uri);
+        })
+        // console.log(uris);return;
+
+        Spotify.savePlaylist(name, uris);
     }
 
     showPlaylist(){
@@ -111,6 +120,7 @@ class App extends Component {
                             onAdd={ this.addTrack } />
                         <Playlist playlistName={ this.state.playlistName }
                             playlistTracks={ this.state.playlistTracks }
+                            // playlistTracks={this.showPlaylist}
                             onRemove={ this.removeTrack }
                             onNameChange={ this.updatePlaylistName }
                             onSave={this.savePlaylist} />
