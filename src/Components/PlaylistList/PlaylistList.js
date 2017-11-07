@@ -34,6 +34,7 @@ export class PlaylistList extends Component{
 						return <PlaylistListItem
 									key={list.id}
 									list={list}
+									onClick={this.props.onClick}
 								/>
 					})
 				}

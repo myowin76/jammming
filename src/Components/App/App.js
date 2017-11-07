@@ -81,8 +81,9 @@ class App extends Component {
             });
     }
 
-    showPlaylist(){
-        Spotify.getPlayList();
+    fetchPlayListById(id){
+        
+        Spotify.getPlayListBy(id);
     }
 
     search(term){
@@ -102,13 +103,13 @@ class App extends Component {
                     <SearchBar onSearch={this.search} />
                     <div className="App-playlist">
                         <SearchResults 
-                            searchResults={ this.state.searchResults }  
-                            onAdd={ this.addTrack } />
-                        <PlaylistList />
-                        <Playlist playlistName={ this.state.playlistName }
-                            playlistTracks={ this.state.playlistTracks }
-                            onRemove={ this.removeTrack }
-                            onNameChange={ this.updatePlaylistName }
+                            searchResults={this.state.searchResults }  
+                            onAdd={this.addTrack} />
+                        <PlaylistList onClick={this.fetchPlayListById} />
+                        <Playlist playlistName={this.state.playlistName}
+                            playlistTracks={this.state.playlistTracks}
+                            onRemove={this.removeTrack}
+                            onNameChange={this.updatePlaylistName}
                             onSave={this.savePlaylist} />
                         
                     </div>

@@ -153,5 +153,9 @@ export let Spotify = {
 				})
 			}
 		});
+	},
+
+	getPlayListBy(id){
+		console.log("ID:" + id);
 	}	
 }
