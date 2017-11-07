@@ -15,7 +15,6 @@ export class PlaylistList extends Component{
 
 	componentWillMount(){
 		Spotify.getUserPlaylists().then((list)=>{
-
 			this.setState({
 				playlist: list
 			})
@@ -23,7 +22,7 @@ export class PlaylistList extends Component{
 	}
 
 	updateList(){
-		
+
 	}
 
 	render(){
@@ -33,7 +32,7 @@ export class PlaylistList extends Component{
 				{
 					this.state.playlist.map((list,i) => {
 						return <PlaylistListItem
-									key={'id'+i}
+									key={list.id}
 									list={list}
 								/>
 					})

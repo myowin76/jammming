@@ -137,7 +137,16 @@ export let Spotify = {
 				}).then(response => {
 					return response.json();
 				}).then(jsonResponse => {
-					let playlist = jsonResponse.items;
+					// let playlist = jsonResponse.items;
+					let playlist = [];
+
+					jsonResponse.items.map(list => {
+						playlist.push({
+							id: list.id,
+							name: list.name
+						})
+					})
+					
 					return playlist;
 
 					console.log(playlist);
