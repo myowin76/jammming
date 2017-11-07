@@ -4,6 +4,7 @@ import './App.css';
 import { SearchBar } from '../SearchBar/SearchBar';
 import { SearchResults } from '../SearchResults/SearchResults';
 import { Playlist } from '../Playlist/Playlist';
+import { PlaylistList } from '../PlaylistList/PlaylistList';
 import { Spotify } from '../util/Spotify';
 
 class App extends Component {
@@ -36,7 +37,9 @@ class App extends Component {
         if(!this.state.playlistTracks.includes(track)){
             
             this.setState(prevState => ({
-                playlistTracks: prevState.playlistTracks.concat(track)
+                playlistTracks: prevState.playlistTracks.concat(track),
+                // searchResults: prevState.searchResults.splice(prevState.playlistTracks.indexOf(track),1)
+                searchResults: prevState.searchResults.filter(el => el.id !== track.id)
             }))
         }
     }
@@ -44,7 +47,8 @@ class App extends Component {
     removeTrack(track){
         
         this.setState({
-            playlistTracks: this.state.playlistTracks.filter(el => el.id !== track.id)
+            playlistTracks: this.state.playlistTracks.filter(el => el.id !== track.id),
+            searchResults: this.state.searchResults.concat(track)
         })
     }
 
@@ -100,12 +104,13 @@ class App extends Component {
                         <SearchResults 
                             searchResults={ this.state.searchResults }  
                             onAdd={ this.addTrack } />
+                        <PlaylistList />
                         <Playlist playlistName={ this.state.playlistName }
                             playlistTracks={ this.state.playlistTracks }
-                            // playlistTracks={this.showPlaylist}
                             onRemove={ this.removeTrack }
                             onNameChange={ this.updatePlaylistName }
                             onSave={this.savePlaylist} />
+                        
                     </div>
                 </div>
             </div>

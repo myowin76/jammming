@@ -127,18 +127,24 @@ export let Spotify = {
 		});
 	},
 
-	getPlayList(){
-		return fetch('https://api.spotify.com/v1/users/' + userID +'/playlists', {
-			method: 'GET',
-			headers: {
-				Authorization: 'Bearer ' + localStorage.getItem('spotify_token', ''),
-				'Content-Type': 'application/json'
+	getUserPlaylists(){
+		return this.getUserID().then(()=>{
+			if(userID){
+				return fetch('https://api.spotify.com/v1/users/' + userID +'/playlists', {
+					method: 'GET',
+					headers: {
+						Authorization: 'Bearer ' + localStorage.getItem('spotify_token', ''),
+						'Content-Type': 'application/json'
+					}
+				}).then(response => {
+					return response.json();
+				}).then(jsonResponse => {
+					let playlist = jsonResponse.items;
+					return playlist;
+
+					console.log(playlist);
+				})
 			}
-		}).then(response => {
-			return response.json();
-		}).then(jsonResponse => {
-			let playlist = jsonResponse.tracks.items;
-			console.log(playlist);
-		})
-	}
+		});
+	}	
 }
