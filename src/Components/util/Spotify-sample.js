@@ -1,5 +1,6 @@
 const client_id = 'YourSpotifyID'; // Your client id
 const redirect_uri = 'http://localhost:3000/';
+// const redirect_uri = 'http://aung-myo.win/';
 const spotifyPath = 'https://accounts.spotify.com/authorize?client_id=' + client_id +'&response_type=token' +
                     '&redirect_uri='+ redirect_uri + 
                     '&scope=playlist-read-private%20playlist-modify%20playlist-modify-private&state=34fFs29kd09';
@@ -15,11 +16,10 @@ export let Spotify = {
 
 	getAccessToken(){
         
-        // save in localstorage
+        // save in localstorage //still need to do it right
         var expires = 0 + localStorage.getItem('spotify_expires', '0');
 
         if (new Date().getTime() > expires) {
-        	console.log('Inside');
             window.location = spotifyPath;
 
             accessToken = (window.location.href).match(/access_token=([^&]*)/)[1];
@@ -29,7 +29,6 @@ export let Spotify = {
             localStorage.setItem('spotify_expires', (new Date()).getTime() + expiresIn);
 
         }else{
-        	console.log('Inside Else');
             accessToken = localStorage.getItem('spotify_token', '');
         }
         
