@@ -13,7 +13,8 @@ export class SearchBar extends Component{
 		}
 	}
 
-	search(){
+	search(e){
+		e.preventDefault();
 		this.props.onSearch(this.state.term);
 	}
 
@@ -27,9 +28,11 @@ export class SearchBar extends Component{
 	render(){
 		return(
 			<div className="SearchBar">
+			<form onSubmit={this.search}>
 				<input placeholder="Enter A Song, Album, or Artist" 
 					onChange={this.handleTermChange} />
 				<a onClick={this.search}>SEARCH</a>
+			</form>
 			</div>
 		)
 	}
