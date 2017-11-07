@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import './PlaylistList.css';
+
+import { PlaylistListItem } from '../PlaylistListItem/PlaylistListItem';
 import { Spotify } from '../util/Spotify';
 
 export class PlaylistList extends Component{
@@ -20,17 +22,22 @@ export class PlaylistList extends Component{
 		});
 	}
 
+	updateList(){
+		
+	}
+
 	render(){
 		return(
 			<div className="PlaylistList">
 				<h2>Local Playlist</h2>
 				{
 					this.state.playlist.map((list,i) => {
-						return <h3>{list.name}</h3>
+						return <PlaylistListItem
+									key={'id'+i}
+									list={list}
+								/>
 					})
 				}
-				
-			
 				
 			</div>
 		)

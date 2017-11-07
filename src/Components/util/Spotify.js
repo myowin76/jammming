@@ -90,9 +90,7 @@ export let Spotify = {
 							'Content-Type': 'application/json'
 						},
 						body: JSON.stringify({
-							name: name,
-							public: false,
-							collaborative: true
+							name: name
 						})
 		
 					}).then(response => {
