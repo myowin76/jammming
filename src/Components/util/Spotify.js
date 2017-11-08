@@ -136,8 +136,8 @@ export let Spotify = {
 					}
 				}).then(response => {
 					return response.json();
+
 				}).then(jsonResponse => {
-					// let playlist = jsonResponse.items;
 					let playlist = [];
 
 					jsonResponse.items.map(list => {
@@ -148,14 +148,42 @@ export let Spotify = {
 					})
 					
 					return playlist;
-
-					console.log(playlist);
 				})
 			}
 		});
 	},
 
 	getPlayListBy(id){
-		console.log("ID:" + id);
+
+		return this.getUserID().then(()=>{
+
+			return fetch('https://api.spotify.com/v1/users/' + userID + '/playlists/'+ id + '/tracks', {
+				method: 'GET',
+				headers: {
+					Authorization: 'Bearer ' + localStorage.getItem('spotify_token', ''),
+					'Content-Type': 'application/json'
+				}
+			}).then(response => {
+				return response.json();
+
+			}).then(jsonResponse => {
+				if(jsonResponse){
+					console.log(jsonResponse);
+					return jsonResponse.items.map(track => (
+						{
+							id: track.track.id,
+							name: track.track.name,
+							artist: track.track.artists[0].name,
+							album: track.track.album.name,
+							uri: track.track.uri
+						}
+					))
+				}
+				return jsonResponse.items;
+
+
+
+			})
+		});
 	}	
 }

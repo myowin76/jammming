@@ -24,6 +24,7 @@ class App extends Component {
         this.updatePlaylistName = this.updatePlaylistName.bind(this);
         this.savePlaylist = this.savePlaylist.bind(this);
         this.search = this.search.bind(this);
+        this.fetchPlayListById = this.fetchPlayListById.bind(this);
     }
 
     
@@ -83,12 +84,19 @@ class App extends Component {
 
     fetchPlayListById(id){
         
-        Spotify.getPlayListBy(id);
+        Spotify.getPlayListBy(id).then(tracks => {
+            
+            
+            this.setState({
+                playlistTracks: tracks
+            })
+        })
     }
 
     search(term){
         
         Spotify.search(term).then(tracks => {
+
             this.setState({
                 searchResults: tracks
             })
