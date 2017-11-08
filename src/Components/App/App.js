@@ -25,6 +25,7 @@ class App extends Component {
         this.updatePlaylistName = this.updatePlaylistName.bind(this);
         this.savePlaylist = this.savePlaylist.bind(this);
         this.search = this.search.bind(this);
+        this.updateInput = this.updateInput.bind(this);
         this.selectPlaylist = this.selectPlaylist.bind(this);
     }
 
@@ -73,27 +74,31 @@ class App extends Component {
         Spotify.savePlaylist(name, uris, id)
             .then(() => {
                 // clear the search results and play list
-                // if(snap_id){
                     this.setState({
                         searchResults: [],
                         playlistTracks: [],
                         playlistName: 'New Playlist',
                         playlistId: null
                     })
-                // }
-                // return snap_id;
+
             });
     }
 
-    selectPlaylist(id){
+    selectPlaylist(id, name){
         
         Spotify.getPlayListBy(id).then(tracks => {
             
             this.setState({
                 playlistTracks: tracks,
-                playlistId: id
+                playlistId: id,
+                playlistName: name
             })
         })
+    }
+
+    updateInput(){
+        
+        return 'this';
     }
 
     search(term){
@@ -116,11 +121,13 @@ class App extends Component {
                         <SearchResults 
                             searchResults={this.state.searchResults }  
                             onAdd={this.addTrack} />
-                        <PlaylistList onClick={this.selectPlaylist} />
+                        <PlaylistList 
+                            onClick={this.selectPlaylist} />
                         <Playlist playlistName={this.state.playlistName}
                             playlistTracks={this.state.playlistTracks}
                             onRemove={this.removeTrack}
                             onNameChange={this.updatePlaylistName}
+                            inputText={this.state.playlistName}
                             onSave={this.savePlaylist} />
                         
                     </div>

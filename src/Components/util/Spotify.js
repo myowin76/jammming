@@ -74,7 +74,28 @@ export let Spotify = {
 			})
 	},
 
+	updatePlaylistName(name, playlistId){
+
+		return fetch('https://api.spotify.com/v1/users/' + userID + '/playlists/' + playlistId, {
+			method: 'PUT',
+			headers: {
+				'Authorization': 'Bearer ' + localStorage.getItem('spotify_token', ''),
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				name: name
+			})				
+
+		}).then(response => {
+			return response;
+
+		})
+	},
+
 	updatePlaylist(name,trackUris, playlistId){
+		if(name){
+			this.updatePlaylistName(name,playlistId);
+		}
 
         return fetch('https://api.spotify.com/v1/users/' + userID +'/playlists/' + playlistId + '/tracks', {
 			method: 'PUT',
@@ -206,10 +227,6 @@ export let Spotify = {
 						}
 					))
 				}
-				return jsonResponse.items;
-
-
-
 			})
 		});
 	}	

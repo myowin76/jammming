@@ -28,7 +28,7 @@ export class PlaylistList extends Component{
 				{
 					this.state.playlist.map((list,i) => {
 						return <PlaylistListItem
-									key={list.id}
+									key={'id' + i}
 									list={list}
 									onClick={this.props.onClick}
 								/>

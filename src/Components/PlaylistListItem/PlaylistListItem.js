@@ -8,7 +8,7 @@ export class PlaylistListItem extends Component{
 	}
 
 	getTracks(){
-		this.props.onClick(this.props.list.id);
+		this.props.onClick(this.props.list.id, this.props.list.name);
 	}
 
 	render(){

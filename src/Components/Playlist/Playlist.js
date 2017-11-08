@@ -15,8 +15,9 @@ export class Playlist extends Component{
 	render(){
 		return(
 			<div className="Playlist">
-				<input defaultValue={ 'New Playlist' } onChange={ this.handleNameChange }
-					/>
+				<input 
+					value={this.props.inputText ? this.props.inputText : 'New Playlist'} 
+					onChange={ this.handleNameChange } />
 				<TrackList 
 					tracks={ this.props.playlistTracks }
 					onRemove={ this.props.onRemove }
