@@ -74,15 +74,41 @@ export let Spotify = {
 			})
 	},
 
-	savePlaylist(name, trackUris){
+	updatePlaylist(name,trackUris, playlistId){
+
+        return fetch('https://api.spotify.com/v1/users/' + userID +'/playlists/' + playlistId + '/tracks', {
+			method: 'PUT',
+			headers: {
+				'Authorization': 'Bearer ' + localStorage.getItem('spotify_token', ''),
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				uris: trackUris
+			})					
+
+		}).then(response => {
+			return response.json();
+
+		}).then(jsonResponse => {
+			return jsonResponse.snapshot_id;
+		});
+    },
+
+	savePlaylist(name, trackUris, playlistId){
 		
 		if(name == null || trackUris.length < 0){
 			return;
 		}
-		
+
 		return this.getUserID().then(()=>{
+			
 			if(userID){
-				
+				if(playlistId){	
+					// Playlist ID existed / need to update
+					this.updatePlaylist(name, trackUris, playlistId);
+					
+				}else{
+					// Create a new playlist
 					return fetch('https://api.spotify.com/v1/users/' + userID +'/playlists', {
 						method: 'POST',
 						headers: {
@@ -120,9 +146,10 @@ export let Spotify = {
 						}
 						
 					})
-				
+				}
 			}
-		});
+		});				
+			
 	},
 
 	getUserPlaylists(){
@@ -168,7 +195,7 @@ export let Spotify = {
 
 			}).then(jsonResponse => {
 				if(jsonResponse){
-					console.log(jsonResponse);
+					
 					return jsonResponse.items.map(track => (
 						{
 							id: track.track.id,

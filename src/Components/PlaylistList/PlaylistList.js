@@ -21,10 +21,6 @@ export class PlaylistList extends Component{
 		});
 	}
 
-	updateList(){
-
-	}
-
 	render(){
 		return(
 			<div className="PlaylistList">

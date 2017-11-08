@@ -14,8 +14,9 @@ class App extends Component {
         super(props);
         this.state = {
             searchResults: [],
+            playlistTracks: [],
             playlistName: 'My Playlist',
-            playlistTracks: []
+            playlistId: null
         }
 
         /* Bind $this to methods */
@@ -24,7 +25,7 @@ class App extends Component {
         this.updatePlaylistName = this.updatePlaylistName.bind(this);
         this.savePlaylist = this.savePlaylist.bind(this);
         this.search = this.search.bind(this);
-        this.fetchPlayListById = this.fetchPlayListById.bind(this);
+        this.selectPlaylist = this.selectPlaylist.bind(this);
     }
 
     
@@ -63,32 +64,34 @@ class App extends Component {
         let uris = [];
         let trackURIs = this.state.playlistTracks;
         let name = this.state.playlistName;
+        let id = this.state.playlistId;
 
         Object.keys(trackURIs).map((p)=>{
             return uris.push(trackURIs[p].uri);
         })      
 
-        Spotify.savePlaylist(name, uris)
-            .then((snap_id) => {
+        Spotify.savePlaylist(name, uris, id)
+            .then(() => {
                 // clear the search results and play list
-                if(snap_id){
+                // if(snap_id){
                     this.setState({
                         searchResults: [],
                         playlistTracks: [],
-                        playlistName: 'New Playlist'
+                        playlistName: 'New Playlist',
+                        playlistId: null
                     })
-                }
-                return snap_id;
+                // }
+                // return snap_id;
             });
     }
 
-    fetchPlayListById(id){
+    selectPlaylist(id){
         
         Spotify.getPlayListBy(id).then(tracks => {
             
-            
             this.setState({
-                playlistTracks: tracks
+                playlistTracks: tracks,
+                playlistId: id
             })
         })
     }
@@ -113,7 +116,7 @@ class App extends Component {
                         <SearchResults 
                             searchResults={this.state.searchResults }  
                             onAdd={this.addTrack} />
-                        <PlaylistList onClick={this.fetchPlayListById} />
+                        <PlaylistList onClick={this.selectPlaylist} />
                         <Playlist playlistName={this.state.playlistName}
                             playlistTracks={this.state.playlistTracks}
                             onRemove={this.removeTrack}
